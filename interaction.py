@@ -99,7 +99,7 @@ class AnnotationMixin:
                         self._add_feature_point(is_left, img_x, img_y)
                         self.app.post_to_main_thread(self.window, self._update_display_images)
 
-            return gui.Widget.EventCallbackResult.CONSUMED
+            return True
 
         elif event.type == gui.MouseEvent.Type.DRAG:
             if self.delete_mode and self.drag_start_coord is not None:
@@ -109,7 +109,7 @@ class AnnotationMixin:
                     if coords:
                         self.drag_curr_coord = coords
                         self.app.post_to_main_thread(self.window, self._update_display_images)
-                return gui.Widget.EventCallbackResult.CONSUMED
+                return True
 
         elif event.type == gui.MouseEvent.Type.BUTTON_UP:
             if self.delete_mode and self.drag_start_coord is not None:
@@ -123,6 +123,6 @@ class AnnotationMixin:
                 self.drag_curr_coord = None
                 self.drag_is_left = None
                 self.app.post_to_main_thread(self.window, self._update_display_images)
-                return gui.Widget.EventCallbackResult.CONSUMED
+                return True
 
-        return gui.Widget.EventCallbackResult.IGNORED
+        return False

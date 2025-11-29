@@ -1,7 +1,7 @@
 import os
 
 import cv2
-import open3d.visualization.gui as gui
+import open3d.visualization.gui as gui # type: ignore
 
 from .constants import DEFAULT_ZOOM, MIN_ZOOM, MAX_ZOOM
 from .display import DisplayMixin
@@ -22,7 +22,7 @@ class ManualFeatureAnnotator(FileIOMixin, AnnotationMixin, NavigationMixin, Disp
             if f.lower().endswith(('.jpg', '.png', '.jpeg'))
         ])
         if len(self.image_files) < 2:
-            print("错误: 文件夹中至少需要两张图片")
+            print("Error: at least two pictures")
 
         self.current_idx = 0
 
@@ -30,7 +30,7 @@ class ManualFeatureAnnotator(FileIOMixin, AnnotationMixin, NavigationMixin, Disp
         self.image_metadata = {f: None for f in self.image_files}
         self.max_point3d_id = 0
 
-        self.sift = cv2.SIFT_create()
+        self.sift = cv2.SIFT_create() # type: ignore
 
         self.current_feature_id = 1
         self.zoom_factor = DEFAULT_ZOOM
@@ -44,6 +44,7 @@ class ManualFeatureAnnotator(FileIOMixin, AnnotationMixin, NavigationMixin, Disp
         self.app.initialize()
         self.window = self.app.create_window("Open3D Manual SfM Annotator", 2000, 1200)
 
+        # key events callback
         self.window.set_on_key(self._on_key)
 
         self._build_layout()
@@ -148,18 +149,18 @@ class ManualFeatureAnnotator(FileIOMixin, AnnotationMixin, NavigationMixin, Disp
         if event.type == gui.KeyEvent.Type.DOWN:
             if event.key == gui.KeyName.N:
                 self._on_next()
-                return gui.Widget.EventCallbackResult.CONSUMED
+                return True
             elif event.key == gui.KeyName.P:
                 self._on_prev()
-                return gui.Widget.EventCallbackResult.CONSUMED
+                return True
             elif event.key == gui.KeyName.U:
                 self._toggle_delete_mode()
-                return gui.Widget.EventCallbackResult.CONSUMED
+                return True
             elif event.key == gui.KeyName.D:
                 self._on_delete_single()
-                return gui.Widget.EventCallbackResult.CONSUMED
+                return True
 
-        return gui.Widget.EventCallbackResult.IGNORED
+        return False
 
     def _toggle_delete_mode(self):
         self.delete_mode = not self.delete_mode
